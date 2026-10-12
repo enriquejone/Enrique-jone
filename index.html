@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sound-to-Binary Converter | Multimedia Activity</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #556da7 0%, #111827 100%);
+            --card-bg: rgba(102, 131, 177, 0.7);
+            --card-border: rgba(35, 138, 56, 0.15);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #fb1313;
+            --accent-hover: #9bce93;
+            --accent-glow: rgba(119, 72, 163, 0.25);
+            --danger: #f43f5e;
+            --danger-bg: rgba(244, 63, 94, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif, system-ui;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 30px 15px;
+            line-height: 1.5;
+        }
+
+        .app-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: -0.5px;
+        }
+
+        .student-badge {
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid var(--accent);
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .student-badge strong {
+            color: var(--text-main);
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        input {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: var(--text-main);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .btn-toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        button {
+            background: var(--accent);
+            color: #090d16;
+            border: none;
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        button:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        button.secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+        }
+
+        button.secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .alert-box {
+            background: var(--danger-bg);
+            border: 1px solid var(--danger);
+            color: #fecdd3;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .section-box {
+            margin-top: 35px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .facts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .fact-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .fact-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .fact-val {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(15, 23, 42, 0.4);
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: rgba(30, 41, 59, 0.9);
+            color: var(--accent);
+            font-weight: 600;
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--text-main);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        code, .binary-display {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent);
+        }
+
+        .binary-container {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 18px;
+            border-radius: 12px;
+            font-family: 'Fira Code', monospace;
+            font-size: 1.05rem;
+            letter-spacing: 2px;
+            color: var(--accent);
+            word-break: break-all;
+            margin-bottom: 15px;
+        }
+
+        .total-bits-text {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+
+        .total-bits-text span {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        ol {
+            padding-left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        li {
+            color: var(--text-muted);
+        }
+
+        li strong {
+            color: var(--text-main);
+            display: block;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <div>
+            <h1>Sound to Binary Converter</h1>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Multimedia Asynchronous Activity</p>
+        </div>
+        <div class="student-badge">
+            <div><strong>Student:</strong> Enrique Jone</div>
+            <div><strong>Section:</strong> BSCS-3</div>
+        </div>
+    </header>
+
+    <div id="errorBox" class="alert-box"></div>
+
+    <div class="controls-grid">
+        <div class="input-group">
+            <label for="freqInput">Frequency (Hz)</label>
+            <input type="number" id="freqInput" value="1000" step="any">
+        </div>
+        <div class="input-group">
+            <label for="ampInput">Amplitude (0 to 1)</label>
+            <input type="number" id="ampInput" value="1" step="any">
+        </div>
+        <div class="input-group">
+            <label for="samplesInput">Number of Samples (2-64)</label>
+            <input type="number" id="samplesInput" value="4">
+        </div>
+        <div class="input-group">
+            <label for="bitsInput">Bits per Sample (1-8)</label>
+            <input type="number" id="bitsInput" value="2">
+        </div>
+    </div>
+
+    <div class="btn-toolbar">
+        <button id="convertBtn">Convert Wave</button>
+        <button id="playBtn" class="secondary">Play Tone (Bonus)</button>
+    </div>
+
+    <!-- Wave Facts Section -->
+    <div class="section-box">
+        <h2>Wave Analysis Facts</h2>
+        <div class="facts-grid">
+            <div class="fact-card">
+                <div class="fact-label">Amplitude</div>
+                <div class="fact-val" id="factAmp">-</div>
+            </div>
+            <div class="fact-card">
+                <div class="fact-label">Frequency</div>
+                <div class="fact-val" id="factFreq">-</div>
+            </div>
+            <div class="fact-card">
+                <div class="fact-label">Period</div>
+                <div class="fact-val" id="factPeriod">-</div>
+            </div>
+            <div class="fact-card">
+                <div class="fact-label">Wavelength</div>
+                <div class="fact-val" id="factWavelength">-</div>
+            </div>
+        </div>
+
+        <h2>Sample Measurements</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sample #</th>
+                        <th>Time (ms)</th>
+                        <th>Amplitude</th>
+                        <th>Level</th>
+                        <th>Binary</th>
+                    </tr>
+                </thead>
+                <tbody id="sampleTableBody">
+                    <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Click "Convert Wave" to load data.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Full Binary String</h2>
+        <div class="binary-container" id="binaryStringOutput">Click "Convert Wave" to generate binary.</div>
+        <div class="total-bits-text">Total Bits: <span id="totalBitsOutput">-</span></div>
+    </div>
+
+    <!-- Test Results Section -->
+    <div class="section-box">
+        <h2>Test Results Table</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Test</th>
+                        <th>Frequency</th>
+                        <th>Amplitude</th>
+                        <th>Samples</th>
+                        <th>Bits</th>
+                        <th>Period</th>
+                        <th>Wavelength</th>
+                        <th>Total bits</th>
+                        <th>Binary result</th>
+                    </tr>
+                </thead>
+                <tbody id="testTableBody">
+                    <!-- Populated dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Explain It Section -->
+    <div class="section-box">
+        <h2>Explain It Section</h2>
+        <ol>
+            <li>
+                <strong>In your own words, how does your app change a sound wave into binary? Name the three steps.</strong>
+                Sample the wave's height at equal time steps, round each height to the nearest level, then write each level in binary.
+            </li>
+            <li>
+                <strong>Run Test A again with 2 bits, then 6 bits. Which gives more detail about the wave, and why?</strong>
+                6 bits gives more detail because it provides 64 levels instead of 4, allowing the binary representation to follow the wave's height much more closely, though it uses more bits.
+            </li>
+            <li>
+                <strong>Which test has the longest wavelength? How is wavelength connected to frequency?</strong>
+                Test B (200 Hz) has the longest wavelength. Wavelength is inversely connected to frequency; a higher frequency means a shorter wavelength.
+            </li>
+            <li>
+                <strong>What was the hardest stage to build, and how did you fix it?</strong>
+                Managing correct rounding of halfway sample heights and ensuring precise leading zeros for binary strings was challenging, which was resolved by implementing strict rounding functions and zero-padding logic.
+            </li>
+        </ol>
+    </div>
+</div>
+
+<script>
+    function padBinary(num, bits) {
+        let bin = num.toString(2);
+        while (bin.length < bits) {
+            bin = '0' + bin;
+        }
+        return bin;
+    }
+
+    function calculateWaveData(freq, amp, samples, bits) {
+        const periodMs = (1 / freq) * 1000;
+        
+        let wavelengthM = 343 / freq;
+        let wavelengthStr = "";
+        if (wavelengthM >= 1) {
+            wavelengthStr = wavelengthM.toFixed(2) + " m";
+        } else {
+            wavelengthStr = (wavelengthM * 100).toFixed(1) + " cm";
+        }
+
+        const levels = Math.pow(2, bits);
+        let sampleRows = [];
+        let binaryArray = [];
+
+        for (let i = 0; i < samples; i++) {
+            let timeMs = (i * periodMs) / samples;
+            let height = amp * Math.sin(2 * Math.PI * i / samples);
+            
+            let rawLevel = ((height + 1) / 2) * (levels - 1);
+            let level = Math.round(rawLevel);
+            if (level < 0) level = 0;
+            if (level >= levels) level = levels - 1;
+
+            let binVal = padBinary(level, bits);
+            binaryArray.push(binVal);
+
+            sampleRows.push({
+                sampleNum: i + 1,
+                time: timeMs.toFixed(2),
+                amplitude: height.toFixed(2),
+                level: level,
+                binary: binVal
+            });
+        }
+
+        const totalBits = samples * bits;
+        const binaryString = binaryArray.join(' ');
+
+        return {
+            period: periodMs.toFixed(2) + " ms",
+            wavelength: wavelengthStr,
+            sampleRows: sampleRows,
+            binaryString: binaryString,
+            totalBits: totalBits
+        };
+    }
+
+    function runConverter() {
+        const freq = parseFloat(document.getElementById('freqInput').value);
+        const amp = parseFloat(document.getElementById('ampInput').value);
+        const samples = parseInt(document.getElementById('samplesInput').value);
+        const bits = parseInt(document.getElementById('bitsInput').value);
+        const errorBox = document.getElementById('errorBox');
+
+        let errors = [];
+        if (isNaN(freq) || freq <= 0) errors.push("Frequency must be greater than 0.");
+        if (isNaN(amp) || amp < 0 || amp > 1) errors.push("Amplitude must be between 0 and 1.");
+        if (isNaN(samples) || !Number.isInteger(samples) || samples < 2 || samples > 64) errors.push("Samples must be a whole number from 2 to 64.");
+        if (isNaN(bits) || !Number.isInteger(bits) || bits < 1 || bits > 8) errors.push("Bits must be a whole number from 1 to 8.");
+
+        if (errors.length > 0) {
+            errorBox.innerHTML = "<strong>Validation Error:</strong><br>" + errors.join("<br>");
+            errorBox.style.display = "block";
+            return;
+        } else {
+            errorBox.style.display = "none";
+        }
+
+        const data = calculateWaveData(freq, amp, samples, bits);
+
+        document.getElementById('factAmp').textContent = amp;
+        document.getElementById('factFreq').textContent = freq + " Hz";
+        document.getElementById('factPeriod').textContent = data.period;
+        document.getElementById('factWavelength').textContent = data.wavelength;
+
+        const tbody = document.getElementById('sampleTableBody');
+        tbody.innerHTML = "";
+        data.sampleRows.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${row.sampleNum}</td>
+                <td>${row.time}</td>
+                <td>${row.amplitude}</td>
+                <td>${row.level}</td>
+                <td><code>${row.binary}</code></td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('binaryStringOutput').textContent = data.binaryString;
+        document.getElementById('totalBitsOutput').textContent = data.totalBits;
+    }
+
+    function populateTestResults() {
+        const tests = [
+            { name: 'A', freq: 440, amp: 0.8, samples: 8, bits: 3 },
+            { name: 'B', freq: 200, amp: 0.5, samples: 6, bits: 4 },
+            { name: 'C', freq: 500, amp: 0.9, samples: 5, bits: 3 }
+        ];
+
+        const tbody = document.getElementById('testTableBody');
+        tbody.innerHTML = "";
+
+        tests.forEach(test => {
+            const res = calculateWaveData(test.freq, test.amp, test.samples, test.bits);
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>Test ${test.name}</td>
+                <td>${test.freq} Hz</td>
+                <td>${test.amp}</td>
+                <td>${test.samples}</td>
+                <td>${test.bits}</td>
+                <td>${res.period}</td>
+                <td>${res.wavelength}</td>
+                <td>${res.totalBits}</td>
+                <td><code>${res.binaryString}</code></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    document.getElementById('playBtn').addEventListener('click', () => {
+        const freq = parseFloat(document.getElementById('freqInput').value);
+        if (isNaN(freq) || freq <= 0) {
+            alert("Please enter a valid frequency before playing tone.");
+            return;
+        }
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.0);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 1.0);
+        } catch (e) {
+            alert("Web Audio API not supported or blocked by browser.");
+        }
+    });
+
+    document.getElementById('convertBtn').addEventListener('click', runConverter);
+
+    window.onload = function() {
+        runConverter();
+        populateTestResults();
+    };
+</script>
+
+</body>
+</html>
